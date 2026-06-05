@@ -4,7 +4,54 @@ document.getElementById('btnCloseWdMgr').addEventListener('click',function(){APP
 document.getElementById('btnAdmRechargeSubmit').addEventListener('click',function(){APP.admRecharge()});
 document.getElementById('btnCancelAdmRecharge').addEventListener('click',function(){APP.hideModal('admRechargeModal')});
 document.querySelectorAll('.bottom-nav a').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();var pg=a.getAttribute('data-page');APP.switchPage(pg,a)})});
+
+// ===== 增强兼容层 =====
+APP.renderPage = function(pageId) {
+  var pages = document.querySelectorAll('.page');
+  pages.forEach(function(p) { p.classList.remove('active'); });
+  var target = document.getElementById(pageId);
+  if (target) target.classList.add('active');
+  document.querySelectorAll('.bottom-nav a').forEach(function(a) {
+    a.classList.remove('active');
+    if (a.getAttribute('data-page') === pageId) a.classList.add('active');
+  });
+};
+APP.loadData = function() {
+  APP.state.curUser = APP.data.load('curUser');
+  APP.state.users = APP.data.load('users');
+  APP.state.products = APP.data.load('products');
+  APP.state.orders = APP.data.load('orders');
+  APP.state.withdraws = APP.data.load('withdraws');
+  APP.state.transactions = APP.data.load('transactions');
+  APP.updateUI();
+};
+(function(){
+  var map={
+    login:'APP.login()',register:'APP.register()',logout:'APP.logout()',
+    buy:'APP.buyProduct()',submitPub:'APP.publishProduct()',
+    recharge:'if(APP.state.curUser)APP.showModal("rechargeModal");else APP.showModal("loginModal")',
+    withdraw:'if(APP.state.curUser)APP.showModal("withdrawModal");else APP.showModal("loginModal")',
+    pubProd:'if(APP.state.curUser)APP.showModal("pubModal");else APP.showModal("loginModal")',
+    userMgr:'APP.showModal("userMgrModal")',prodMgr:'APP.showModal("prodMgrModal")',
+    wdMgr:'APP.showModal("wdMgrModal")',admRecharge:'APP.showModal("admRechargeModal")',
+    submitRecharge:'APP.submitRecharge()',cancelRecharge:'APP.hideModal("rechargeModal")',
+    submitWd:'APP.submitWithdraw()',cancelWd:'APP.hideModal("withdrawModal")',
+    cancelPub:'APP.hideModal("pubModal")',closeDetail:'APP.hideModal("detailModal")',
+    closeUserMgr:'APP.hideModal("userMgrModal")',closeProdMgr:'APP.hideModal("prodMgrModal")',
+    closeWdMgr:'APP.hideModal("wdMgrModal")',admRechargeSubmit:'APP.admRecharge()',
+    cancelAdmRecharge:'APP.hideModal("admRechargeModal")'
+  };
+  function apply(){
+    for(var k in map){
+      var el=document.getElementById('btn'+k.charAt(0).toUpperCase()+k.slice(1));
+      if(el&&!el.onclick) el.onclick=new Function(map[k]);
+    }
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',apply);
+  else apply();
+})();
 APP.init();
+
 </script>
 </body>
 </html>
