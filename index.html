@@ -4,7 +4,7 @@ document.getElementById('btnCloseWdMgr').addEventListener('click',function(){APP
 document.getElementById('btnAdmRechargeSubmit').addEventListener('click',function(){APP.admRecharge()});
 document.getElementById('btnCancelAdmRecharge').addEventListener('click',function(){APP.hideModal('admRechargeModal')});
 document.querySelectorAll('.bottom-nav a').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();var pg=a.getAttribute('data-page');APP.switchPage(pg,a)})});
-APP.init() /* v2 */;
+APP.init();
 </script>
 </body>
 </html>
